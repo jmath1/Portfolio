@@ -39,6 +39,7 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
+          echo $ECR_URI
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URI
 
       - name: Build and Tag Docker Image
