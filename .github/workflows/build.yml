@@ -21,14 +21,13 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::471528030347:role/github-runner-role
           aws-region: us-east-1
-      - name: test
-        run: aws sts get-caller-identity
       - name: Retrieve ECR URI from Secret
         run: echo "ECR_URI=${{ secrets.ECR_URI }}" >> $GITHUB_ENV
-      - name: Build and push image
+      - name: Build image
         run: |
-          ls
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
           docker build --file _infrastructure/docker/Dockerfile -t portfolio-app .
+      - name: Push image to ECR
+        run: |
           docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
           docker push ${{ env.ECR_URI }}:latest
