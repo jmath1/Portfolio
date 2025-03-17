@@ -17,13 +17,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Task
-        run: |
-          sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
-
-      - name: Verify Task Installation
-        run: task --version
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -34,8 +27,8 @@ jobs:
 
       - name: Apply Terraform and Capture Outputs
         run: |
-          task tf_init -- registry
-          echo "ECR_URI=$(task tf_output_raw -- registry registry_url)" >> $GITHUB_ENV
+          terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
+          echo "ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)" >> $GITHUB_ENV
 
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v2
