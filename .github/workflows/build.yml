@@ -31,11 +31,12 @@ jobs:
           role-to-assume: arn:aws:iam::471528030347:role/github-runner-role
           aws-region: us-east-1
 
-      - name: Apply Terraform and Capture Outputs
+      - name: Capture Terraform Outputs
         run: |
-          terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
+          echo "Retrieving ECR URL..."
           ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url | tr -d '\n' | tr -d '\r')
           echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
+        shell: bash
 
       - name: Login to Amazon ECR
         run: |
