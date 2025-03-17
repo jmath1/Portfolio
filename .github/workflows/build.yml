@@ -27,15 +27,13 @@ jobs:
 
       - name: Apply Terraform and Capture Outputs
         run: |
-          terraform apply -auto-approve
-          echo "ECR_URI=$(terraform output -raw ecr_repository_uri)" >> $GITHUB_ENV
-          echo "EC2_ROLE_ARN=$(terraform output -raw ec2_role_arn)" >> $GITHUB_ENV
-          echo "GITHUB_OIDC_ROLE_ARN=$(terraform output -raw github_oidc_role_arn)" >> $GITHUB_ENV
+          task tf_init -- registry
+          echo "ECR_URI=$(task tf_output_raw -- registry registry_url)" >> $GITHUB_ENV
 
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ env.GITHUB_OIDC_ROLE_ARN }}
+          role-to-assume: arn:aws:iam::471528030347:role/github-runner-role
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
