@@ -16,15 +16,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: latest
-
-      - name: Initialize Terraform
-        run: terraform init
-
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -37,7 +28,6 @@ jobs:
       - name: Build and push image
         run: |
           ls
-          cd portfolio
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
           docker build --file _infrastructure/docker/Dockerfile -t portfolio-app .
           docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
