@@ -36,7 +36,7 @@ jobs:
           terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
           echo "Retrieving ECR URL..."
           ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)
-          echp "ECR_URI=${ECR_URI}"
+          echo "ECR_URI=${ECR_URI}"
           echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
         shell: bash
 
