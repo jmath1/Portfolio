@@ -1,0 +1,62 @@
+version: "3"
+
+tasks:
+  build:
+    description: Build Django service
+    usage: "task build -- api"
+    cmds:
+      - service={{.CLI_ARGS}};
+        docker build --file _infrastructure/docker/Dockerfile .
+
+  push:
+    description: Build and push all images to registry
+    usage: "task push"
+    cmds:
+      - registry_url=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url );
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${registry_url};
+        docker build --file _infrastructure/docker/Dockerfile . -t ${registry_url}:django;
+        docker push ${registry_url}:django;
+
+  tf_init:
+    description: Init an infrastructure stack. Do not use on the organization stack.
+    usage: "task tf_init -- staging registry"
+    cmds:
+      - stack=$(echo {{ .CLI_ARGS }} | cut -d " " -f1);
+        terraform -chdir=_infrastructure/terraform/stacks/${stack} init -reconfigure -backend-config="key=${stack}.tfstate"
+
+  tf_apply:
+    description: Apply an infrastructure stack
+    usage: "task tf_apply -- staging registry"
+    cmds:
+      - stack=$(echo {{ .CLI_ARGS }} | cut -d " " -f2);
+        terraform -chdir=_infrastructure/terraform/stacks/${stack} apply --var-file=../../_env/${stack}.tfvars
+
+  tf_console:
+    description: Use the console for an infrastructure stack
+    usage: "task tf_console -- staging registry"
+    cmds:
+      - stack=$(echo {{ .CLI_ARGS }} | cut -d " " -f2);
+        terraform -chdir=_infrastructure/terraform/stacks/${stack} console --var-file=../../_env/${stack}.tfvars
+
+  tf_output_raw:
+    description: Output an argument from a state
+    usage: "task tf_output_raw -- registry registry_url"
+    cmds:
+      - stack=$(echo {{ .CLI_ARGS }} | cut -d " " -f1);
+        output=$(echo {{ .CLI_ARGS }} | cut -d " " -f2);
+        echo $(terraform -chdir=_infrastructure/terraform/stacks/${stack} output -raw ${output})
+
+  tf_output:
+    description: Output all of the outputs from the state
+    usage: "task tf_output -- registry"
+    cmds:
+      - stack=$(echo {{ .CLI_ARGS }} | cut -d " " -f1);
+        output=$(echo {{ .CLI_ARGS }} | cut -d " " -f2);
+        echo $(terraform -chdir=_infrastructure/terraform/stacks/${stack} output)
+
+  ssh:
+    description: SSH into an EC2 instance
+    usage: "task ssk_ec2 -- registry"
+    cmds:
+      - ec2_public_ip=$(terraform -chdir=_infrastructure/terraform/stacks/service output -raw ec2_public_ip);
+        ssh -i ~/.ssh/id_rsa ubuntu@${ec2_public_ip}
