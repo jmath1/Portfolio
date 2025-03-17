@@ -35,9 +35,8 @@ jobs:
         run: |
           terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
           echo "Retrieving ECR URL..."
-          echo "ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)" >> $GITHUB_OUTPUT
+          echo "ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)" >> "$GITHUB_OUTPUT"
           echo ${{ env.ECR_URI }}
-        shell: bash
 
       - name: Login to Amazon ECR
         run: |
