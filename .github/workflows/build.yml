@@ -34,7 +34,8 @@ jobs:
       - name: Apply Terraform and Capture Outputs
         run: |
           terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
-          echo "ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)" >> $GITHUB_ENV
+          ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url | tr -d '\n' | tr -d '\r')
+          echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
 
       - name: Login to Amazon ECR
         run: |
