@@ -35,20 +35,18 @@ jobs:
         run: |
           terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
           echo "Retrieving ECR URL..."
-          ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)
-          echo "ECR_URI=${ECR_URI}"
-          echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
+          echo "ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)" >> $GITHUB_OUTPUT
+          echo ${{ env.ECR_URI }}
         shell: bash
 
       - name: Login to Amazon ECR
         run: |
-          echo $ECR_URI
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URI
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
 
       - name: Build and Tag Docker Image
         run: |
           docker build -t portfolio-app .
-          docker tag portfolio-app:latest $ECR_URI:latest
+          docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
 
       - name: Push Docker Image to ECR
-        run: docker push $ECR_URI:latest
+        run: docker push ${{ env.ECR_URI }}:latest
