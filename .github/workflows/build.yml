@@ -30,7 +30,8 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::471528030347:role/github-runner-role
           aws-region: us-east-1
-
+      - name: test
+        run: aws sts get-caller-identity
       - name: Capture Terraform Output, build and push image
         run: |
           echo "Retrieving ECR URL..."
