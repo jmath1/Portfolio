@@ -31,20 +31,11 @@ jobs:
           role-to-assume: arn:aws:iam::471528030347:role/github-runner-role
           aws-region: us-east-1
 
-      - name: Capture Terraform Outputs
-        id: get-ecr-uri
+      - name: Capture Terraform Output, build and push image
         run: |
-          terraform -chdir=_infrastructure/terraform/stacks/registry init -reconfigure -backend-config="key=registry.tfstate"
           echo "Retrieving ECR URL..."
           ECR_URI=$(terraform -chdir=_infrastructure/terraform/stacks/registry output -raw registry_url)
-          echo "ECR_URI=$ECR_URI" >> "$GITHUB_ENV"
-      - name: Login to Amazon ECR
-        run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
-      - name: Build and Tag Docker Image
-        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URI
           docker build -t portfolio-app .
-          docker tag portfolio-app:latest ${{ steps.get-ecr-uri.outputs.ECR_URI }}:latest
-
-      - name: Push Docker Image to ECR
-        run: docker push ${{ steps.get-ecr-uri.outputs.ECR_URI }}:latest
+          docker tag portfolio-app:latest $ECR_URI:latest
+          docker push $ECR_URI:latest
