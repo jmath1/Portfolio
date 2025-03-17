@@ -36,6 +36,8 @@ jobs:
         run: echo "ECR_URI=${{ secrets.ECR_URI }}" >> $GITHUB_ENV
       - name: Build and push image
         run: |
+          ls
+          cd portfolio
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
           docker build -t portfolio-app .
           docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
