@@ -17,6 +17,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Install Task
+        run: |
+          sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+
+      - name: Verify Task Installation
+        run: task --version
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
