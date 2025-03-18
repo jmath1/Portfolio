@@ -2,3 +2,5 @@ venv/
 .env
 .terraform
 .terraform.lock.hcl
+github_id_rsa
+inventory.ini
