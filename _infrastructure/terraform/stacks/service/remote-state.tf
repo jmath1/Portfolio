@@ -1,8 +1,8 @@
-data "terraform_remote_state" "network" {
+data "terraform_remote_state" "domain" {
   backend = "s3"
 
   config = {
-    key    = "network.tfstate"
+    key    = "domain.tfstate"
     region = "us-east-1"
     bucket = "jonathanmathcom-terraform-state"
   }

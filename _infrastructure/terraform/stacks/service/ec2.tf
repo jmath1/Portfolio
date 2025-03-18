@@ -1,7 +1,7 @@
 resource "aws_instance" "portfolio" {
   ami             = "ami-04b4f1a9cf54c11d0"
   instance_type   = "t3.micro"
-  key_name        = aws_key_pair.existing_ssh_key.key_name
+  key_name        = aws_key_pair.deployer.key_name
   security_groups = [aws_security_group.portfolio_sg.name]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   user_data = <<-EOF
