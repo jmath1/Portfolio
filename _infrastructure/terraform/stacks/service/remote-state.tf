@@ -7,3 +7,13 @@ data "terraform_remote_state" "domain" {
     bucket = "jonathanmathcom-terraform-state"
   }
 }
+
+data "terraform_remote_state" "registry" {
+  backend = "s3"
+
+  config = {
+    key    = "registry.tfstate"
+    region = "us-east-1"
+    bucket = "jonathanmathcom-terraform-state"
+  }
+}
