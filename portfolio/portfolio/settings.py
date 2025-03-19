@@ -11,6 +11,29 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import boto3
+
+if os.getenv("CLOUD"):
+    def get_secret(secret_name):
+        client = boto3.client("secretsmanager")
+        try:
+            get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+            secret = get_secret_value_response.get("SecretString")
+            if secret:
+                return secret
+            else:
+                raise ValueError(f"{secret_name} not found")
+        except Exception as e:
+            print(f"Error retrieving secret {secret_name}: {e}")
+            return None
+
+    os.environ["DB_NAME"] = get_secret("DB_NAME")
+    os.environ["DB_USER"] = get_secret("DB_USER")
+    os.environ["DB_PASSWORD"] = get_secret("DB_PASSWORD")
+    os.environ["DB_HOST"] = get_secret("DB_HOST")
+    os.environ["DB_PORT"] = get_secret("DB_PORT")
+    os.environ["DJANGO_SECRET_KEY"] = get_secret("SECRET_KEY")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +43,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-5xf)*@17^buga54bkdf09m0)6sp!1_t-1ey^f$7j!52=ms3n*w"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.getenv("CLOUD"):
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -74,12 +99,24 @@ WSGI_APPLICATION = "portfolio.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.getenv("CLOUD"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
