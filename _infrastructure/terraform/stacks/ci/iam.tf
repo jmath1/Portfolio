@@ -16,48 +16,37 @@ data "aws_iam_policy_document" "github_allow" {
   }
 }
 
-resource "aws_iam_policy" "ecr_policy" {
-  name        = "ECRPolicy"
-  description = "Allows full access to ECR"
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "ECRPermissions",
-        Effect = "Allow",
-        Action = ["ecr:*"],
-        Resource = ["*"]
-      }
+resource "aws_iam_policy" "github_ecr_push_policy" {
+  name        = "GitHubECRPushPolicy"
+  description = "Allows GitHub Actions to push Docker images to ECR"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload"
+            ],
+            "Resource": "${local.ecr_repo_arn}"
+        }
     ]
-  })
 }
-
-resource "aws_s3_bucket_policy" "github_runner_s3_policy" {
-  bucket = local.bucket_name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Principal = { AWS = aws_iam_role.github_runner_role.arn }
-        Action    = "s3:*"
-        Resource  = ["arn:aws:s3:::${local.bucket_name}/*"]
-      }
-    ]
-  })
+EOF
 }
-
 
 resource "aws_iam_role" "github_runner_role" {
-  name               = "github-runner-role"
+  name               = "GitHubRunnerRole"
   assume_role_policy = data.aws_iam_policy_document.github_allow.json
 }
 
-
-resource "aws_iam_role_policy_attachment" "ecr_policy_attachment" {
-  role       = aws_iam_role.github_runner_role.name
-  policy_arn = aws_iam_policy.ecr_policy.arn
+resource "aws_iam_role_policy_attachment" "github_ecr_policy_attach" {
+  role       = local.github_runner_role_name
+  policy_arn = aws_iam_policy.github_ecr_push_policy.arn
 }
 
