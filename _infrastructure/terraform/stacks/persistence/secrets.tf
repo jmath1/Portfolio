@@ -18,6 +18,15 @@ resource "aws_secretsmanager_secret_version" "rds_hostname_version" {
     secret_string = aws_db_instance.portfolio_db.address
 }
 
+resource "aws_secretsmanager_secret" "rds_port" {
+    name = "DB_PORT"
+}
+
+resource "aws_secretsmanager_secret_version" "rds_port_version" {
+    secret_id   = aws_secretsmanager_secret.rds_port.id
+    secret_string = aws_db_instance.portfolio_db.port
+}
+
 resource "aws_secretsmanager_secret" "allowed_host" {
     name = "ALLOWED_HOST"
 }
