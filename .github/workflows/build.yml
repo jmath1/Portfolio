@@ -43,5 +43,6 @@ jobs:
           key: ${{ secrets.SSH_PK }}
           script: |
             docker pull ${{ secrets.ECR_URI }}:latest
+            docker stop $(docker ps -q)
             docker rm $(docker ps -q)
             docker run -d --network host -e CLOUD=True ${{ env.ECR_URI }}:latest
