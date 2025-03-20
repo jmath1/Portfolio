@@ -14,7 +14,6 @@ resource "aws_key_pair" "deployer" {
   public_key = tls_private_key.ssh_key.public_key_openssh
 }
 
-# add key as a secret in github
 resource "github_actions_secret" "ssh_pk" {
   repository      = var.github_repository_repo
   secret_name     = "SSH_PK"
