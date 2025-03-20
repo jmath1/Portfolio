@@ -5,13 +5,14 @@ resource "aws_instance" "portfolio" {
   key_name             = aws_key_pair.deployer.key_name
   vpc_security_group_ids      = [aws_security_group.portfolio_sg.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-
+  subnet_id            = local.public_subnets[0]
+  associate_public_ip_address = true
   user_data = <<-EOF
     #!/bin/bash
     set -ex
 
     apt update -y
-    apt install -y docker.io git nginx awscli unzip
+    apt install -y docker.io git nginx unzip
 
     systemctl start docker
     systemctl enable docker
@@ -26,26 +27,26 @@ resource "aws_instance" "portfolio" {
     cd /home/ubuntu/portfolio
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${local.ecr_repository_url}
     docker pull ${local.ecr_repository_url}:latest
-    docker run -d --network host ${local.ecr_repository_url}:latest
+    docker run -d --network host -e CLOUD=True ${local.ecr_repository_url}:latest
 
     # Configure Nginx as a reverse proxy for the Docker container
     cat <<EOF_NGINX > /etc/nginx/sites-available/portfolio
     server {
         listen 80;
-        server_name _;
+        server_name api.jonathanmath.com;
 
         location / {
             proxy_pass http://127.0.0.1:8000;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
         }
     }
     EOF_NGINX
 
-    # Enable Nginx site and restart Nginx
     ln -s /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/
+    rm /etc/nginx/sites-enabled/default
     systemctl restart nginx
     systemctl enable nginx
   EOF
@@ -57,19 +58,20 @@ resource "aws_instance" "portfolio" {
 
 
 resource "aws_security_group" "portfolio_sg" {
-  name        = "portfolio_sg"
-  description = "Allow HTTPS and SSH"
+  name        = "portfolio-sg"
+  description = "Allow HTTP and SSH"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
 
   ingress {
     from_port   = 22
     to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
