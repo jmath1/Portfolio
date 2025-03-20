@@ -17,3 +17,12 @@ resource "aws_secretsmanager_secret_version" "rds_hostname_version" {
     secret_id   = aws_secretsmanager_secret.rds_hostname.id
     secret_string = aws_db_instance.portfolio_db.endpoint
 }
+
+resource "aws_secretsmanager_secret" "allowed_host" {
+    name = "ALLOWED_HOST"
+}
+
+resource "aws_secretsmanager_secret_version" "alloweed_host_version" {
+    secret_id   = aws_secretsmanager_secret.allowed_host.id
+    secret_string = "${var.domain_name}.${var.tld}"
+}

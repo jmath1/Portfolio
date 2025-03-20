@@ -11,3 +11,13 @@ resource "aws_db_instance" "portfolio_db" {
   publicly_accessible = false
   skip_final_snapshot = true
 }
+
+
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "rds-subnet-group"
+  subnet_ids = local.database_subnet_ids
+
+  tags = {
+    Name = "rds-subnet-group"
+  }
+}

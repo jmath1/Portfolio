@@ -17,3 +17,13 @@ variable "secret_key" {
   description = "The secret key for the django app"
   type        = string
 }
+
+variable "domain_name" {
+    description = "The domain name for the django app"
+    type        = string
+}
+
+variable "tld" {
+    description = "The top level domain for the django app"
+    type        = string
+}
