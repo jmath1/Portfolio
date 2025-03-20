@@ -27,3 +27,13 @@ data "terraform_remote_state" "network" {
     bucket = "jonathanmathcom-terraform-state"
   }
 }
+
+data "terraform_remote_state" "persistence" {
+  backend = "s3"
+
+  config = {
+    key    = "persistence.tfstate"
+    region = "us-east-1"
+    bucket = "jonathanmathcom-terraform-state"
+  }
+}

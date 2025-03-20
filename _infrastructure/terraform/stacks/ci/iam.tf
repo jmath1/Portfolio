@@ -33,7 +33,7 @@ resource "aws_iam_policy" "github_ecr_push_policy" {
                 "ecr:UploadLayerPart",
                 "ecr:CompleteLayerUpload"
             ],
-            "Resource": "${local.ecr_repo_arn}"
+            "Resource": "*"
         }
     ]
 }

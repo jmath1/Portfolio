@@ -16,5 +16,6 @@ locals {
     
     database_subnets = data.terraform_remote_state.network.outputs.database_subnet_ids
     database_subnet_cidrs = data.terraform_remote_state.network.outputs.database_subnet_cidrs
-    
+
+    secrets_arns = data.terraform_remote_state.persistence.outputs.secrets_arns
 }

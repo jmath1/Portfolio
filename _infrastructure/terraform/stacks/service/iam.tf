@@ -20,7 +20,24 @@ resource "aws_iam_policy" "ecr_pull_policy" {
 EOF
 }
 
-
+resource "aws_iam_policy" "secrets_read_policy" {
+  name        = "SecretsReadPolicy"
+  description = "Allow EC2 to read secrets"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": ${jsonencode(local.secrets_arns)}
+        }
+    ]
+}
+EOF
+}
 
 resource "aws_iam_role" "portfolio_role" {
   name = "portfolio_role"
@@ -51,6 +68,11 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_pull" {
 }
 
 
+
+resource "aws_iam_role_policy_attachment" "attach_secrets_read" {
+  role       = aws_iam_role.portfolio_role.name
+  policy_arn = aws_iam_policy.secrets_read_policy.arn
+}
 
 resource "aws_security_group" "rds_sg" {
   name        = "rds-security-group"

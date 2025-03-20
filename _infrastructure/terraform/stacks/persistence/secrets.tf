@@ -10,12 +10,12 @@ resource "aws_secretsmanager_secret_version" "env_secrets_version" {
 }
 
 resource "aws_secretsmanager_secret" "rds_hostname" {
-    name = "rds_hostname"
+    name = "DB_HOST"
 }
 
 resource "aws_secretsmanager_secret_version" "rds_hostname_version" {
     secret_id   = aws_secretsmanager_secret.rds_hostname.id
-    secret_string = aws_db_instance.portfolio_db.endpoint
+    secret_string = aws_db_instance.portfolio_db.address
 }
 
 resource "aws_secretsmanager_secret" "allowed_host" {
