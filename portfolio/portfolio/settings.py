@@ -54,7 +54,7 @@ else:
     DEBUG = True
 
 if os.getenv("CLOUD"):
-    ALLOWED_HOST = os.getenv("ALLOWED_HOST")
+    ALLOWED_HOST = get_secret("ALLOWED_HOST")
 else:
     ALLOWED_HOST = "localhost"
 ALLOWED_HOSTS = [
