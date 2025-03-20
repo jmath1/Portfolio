@@ -50,10 +50,14 @@ if os.getenv("CLOUD"):
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = []
+if os.getenv("CLOUD"):
+    ALLOWED_HOST = os.getenv("ALLOWED_HOST")
+else:
+    ALLOWED_HOST = "localhost"
+ALLOWED_HOSTS = [
+    ALLOWED_HOST
+]
 
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
