@@ -44,6 +44,5 @@ jobs:
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
-            docker stop $(docker ps -q)
-            docker rm $(docker ps -q)
+            docker rm $(docker ps -q) --force
             docker run -d --network host -e CLOUD=True ${{ env.ECR_URI }}:latest
