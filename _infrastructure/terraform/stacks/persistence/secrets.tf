@@ -33,5 +33,5 @@ resource "aws_secretsmanager_secret" "allowed_host" {
 
 resource "aws_secretsmanager_secret_version" "alloweed_host_version" {
     secret_id   = aws_secretsmanager_secret.allowed_host.id
-    secret_string = "${var.domain_name}.${var.tld}"
+    secret_string = "api.${var.domain_name}.${var.tld}"
 }
