@@ -38,7 +38,7 @@ jobs:
       - name: SSH into EC2 instance, pull latest image, and rebuild docker container with latest image
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_PUBLIC_IP }}
+          host: ${{ secrets.PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_PK }}
           script: |
