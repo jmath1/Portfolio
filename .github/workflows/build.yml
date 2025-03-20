@@ -42,7 +42,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PK }}
           script: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
             docker rm $(docker ps -q) --force
-            docker run -d --network host -e CLOUD=True ${{ env.ECR_URI }}:latest
+            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
