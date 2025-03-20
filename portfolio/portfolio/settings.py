@@ -16,7 +16,7 @@ import boto3
 
 if os.getenv("CLOUD"):
     def get_secret(secret_name):
-        client = boto3.client("secretsmanager")
+        client = boto3.client("secretsmanager", region_name="us-east-1")
         try:
             get_secret_value_response = client.get_secret_value(SecretId=secret_name)
             secret = get_secret_value_response.get("SecretString")
