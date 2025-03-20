@@ -42,11 +42,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if os.getenv("CLOUD"):
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+else:
+    SECRET_KEY = "django-insecure-5xf)*@17^bugaadsfdf09m0)6sp!1_t-1ey^f$7j!52=ms3n*w"
 
 if os.getenv("CLOUD"):
-    DEBUG = False
+    #DEBUG = False
+    DEBUG = True
 else:
     DEBUG = True
 
