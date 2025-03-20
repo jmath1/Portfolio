@@ -32,6 +32,7 @@ jobs:
           docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
           docker push ${{ env.ECR_URI }}:latest
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: SSH into EC2 instance, pull latest image, and rebuild docker container with latest image
