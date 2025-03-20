@@ -46,3 +46,15 @@ jobs:
             docker pull ${{ secrets.ECR_URI }}:latest
             docker rm $(docker ps -q) --force
             docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+  run_migrations:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 instance and run migrations
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PK }}
+          script: |
+            docker exec $(docker ps -q) python manage.py migrate
