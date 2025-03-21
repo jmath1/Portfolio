@@ -3,6 +3,7 @@ resource "aws_instance" "portfolio" {
   ami                  = "ami-04b4f1a9cf54c11d0"
   instance_type        = "t3.micro"
   key_name             = aws_key_pair.deployer.key_name
+  
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   subnet_id            = local.public_subnets[0]
@@ -41,6 +42,10 @@ resource "aws_instance" "portfolio" {
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+
+        location /static {
+            alias /home/ubuntu/portfolio/portfolio/static/
         }
     }
     EOF_NGINX

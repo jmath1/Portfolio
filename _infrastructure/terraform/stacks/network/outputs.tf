@@ -14,20 +14,8 @@ output "public_subnet_cidrs" {
   value = local.public_subnet_cidrs
 }
 
-output "database_subnet_cidrs" {
-  value = local.database_subnet_cidrs
-}
-
-output "database_subnet_ids" {
-  value = module.vpc.database_subnets
-}
-
 output "public_subnets" {
   value = local.public_subnets
-}
-
-output "database_subnet_group_name" {
-  value = module.vpc.database_subnet_group
 }
 
 output "security_group_id" {

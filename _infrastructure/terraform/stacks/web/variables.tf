@@ -27,3 +27,13 @@ variable "tld" {
     description = "The top level domain for the django app"
     type        = string
 }
+
+
+variable "github_repository_repo" {
+  type = string
+  default = "Portfolio"
+}
+
+variable "github_token" {
+  type = string
+}
