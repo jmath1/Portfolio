@@ -4,3 +4,4 @@ venv/
 .terraform.lock.hcl
 github_id_rsa
 inventory.ini
+__pycache__

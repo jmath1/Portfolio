@@ -28,7 +28,6 @@ This repository contains the infrastructure and backend for my portfolio project
 
    1. **Domain**: This stack sets up the domain-specific resources and configurations.
    2. **Network**: This stack configures the network settings, including VPCs, subnets, and routing.
-   3. **Persistence**: This stack handles the setup of databases and other persistent storage solutions like AWS Secrets.
-   4. **Registry**: This stack sets up the ECR repository to hold docker images.
-   5. **Service**: This stack deploys the application services and ALB.
-   6. **CI**: This stack configures the continuous integration and deployment pipelines, their access, and whatever additional secrets it might need.
+   3. **Registry**: This stack sets up the ECR repository to hold docker images.
+   4. **Web**: This stack deploys the application services and ALB. This also handles the setup of databases and other persistent storage solutions like AWS
+   5. **CI**: This stack configures the continuous integration and deployment pipelines, their access, and whatever additional secrets it might need.
