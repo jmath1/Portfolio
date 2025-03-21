@@ -32,7 +32,7 @@ resource "aws_iam_policy" "secrets_read_policy" {
             "Action": [
                 "secretsmanager:GetSecretValue"
             ],
-            "Resource": ${jsonencode(local.secrets_arns)}
+            "Resource": "*"
         }
     ]
 }
@@ -83,7 +83,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.portfolio_sg.id]
+    security_groups = [aws_security_group.ec2_sg.id]
   }
 
   egress {
