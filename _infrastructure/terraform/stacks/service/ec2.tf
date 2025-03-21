@@ -3,16 +3,16 @@ resource "aws_instance" "portfolio" {
   ami                  = "ami-04b4f1a9cf54c11d0"
   instance_type        = "t3.micro"
   key_name             = aws_key_pair.deployer.key_name
-  vpc_security_group_ids      = [aws_security_group.portfolio_sg.id]
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-  subnet_id            = local.public_subnets[0]
+  subnet_id            = local.private_subnets[0]
   associate_public_ip_address = true
   user_data = <<-EOF
     #!/bin/bash
     set -ex
 
     apt update -y
-    apt install -y docker.io git nginx unzip
+    apt install -y docker.io git nginx unzip net-tools postgresql-client
 
     systemctl start docker
     systemctl enable docker
@@ -57,7 +57,7 @@ resource "aws_instance" "portfolio" {
 }
 
 
-resource "aws_security_group" "portfolio_sg" {
+resource "aws_security_group" "ec2_sg" {
   name        = "portfolio-sg"
   description = "Allow HTTP and SSH"
   vpc_id      = local.vpc_id
