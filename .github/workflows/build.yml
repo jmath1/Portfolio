@@ -45,8 +45,8 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
             docker rm $(docker ps -q) --force
-            docker run -d --network host -v /srv/static:/app/portfolio/staticfiles -e CLOUD=True ${{ secrets.ECR_URI }}:latest
-  run_migrations_and_collectstatic:
+            docker run -d --network host -v /srv/static:/app/portfolio/static -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+  migrate:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
@@ -59,3 +59,15 @@ jobs:
           script: |
             docker exec $(docker ps -q) python manage.py collectstatic --noinput
             docker exec $(docker ps -q) python manage.py migrate
+  collectstatic:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 instance and collect static files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PK }}
+          script: |
+            docker exec $(docker ps -q) python manage.py collectstatic --noinput
