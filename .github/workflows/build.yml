@@ -60,7 +60,7 @@ jobs:
             docker exec $(docker ps -q) python manage.py collectstatic --noinput
             docker exec $(docker ps -q) python manage.py migrate
   collectstatic:
-    needs: deploy
+    needs: migrate
     runs-on: ubuntu-latest
     steps:
       - name: SSH into EC2 instance and collect static files
