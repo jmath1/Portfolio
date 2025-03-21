@@ -57,4 +57,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PK }}
           script: |
+            docker exec $(docker ps -q) python manage.py collectstatic --noinput
             docker exec $(docker ps -q) python manage.py migrate
