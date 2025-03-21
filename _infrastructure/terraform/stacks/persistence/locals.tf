@@ -8,4 +8,6 @@ locals {
 
   database_subnet_ids = data.terraform_remote_state.network.outputs.database_subnet_ids
   vpc_id = data.terraform_remote_state.network.outputs.vpc_id
+  public_subnet_cidrs = data.terraform_remote_state.network.outputs.public_subnet_cidrs
+  ec2_sg_id = data.terraform_remote_state.service.outputs.ec2_security_group_id
 }

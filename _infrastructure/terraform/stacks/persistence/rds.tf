@@ -21,3 +21,24 @@ resource "aws_db_subnet_group" "db_subnet_group" {
     Name = "rds-subnet-group"
   }
 }
+
+
+resource "aws_security_group" "rds_sg" {
+  name        = "rds-security-group"
+  description = "Allow database access from ec2 subnet"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [local.ec2_sg_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
