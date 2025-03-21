@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -45,8 +43,8 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
             docker rm $(docker ps -q) --force
-            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
-  run_migrations:
+            docker run -d --network host -v /srv/static:/app/portfolio/staticfiles -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+  run_migrations_and_collectstatic:
     needs: deploy
     runs-on: ubuntu-latest
     steps:

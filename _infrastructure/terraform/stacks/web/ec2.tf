@@ -36,6 +36,10 @@ resource "aws_instance" "portfolio" {
         listen 80;
         server_name api.jonathanmath.com;
 
+        location /static/ {
+            alias /srv/static/;
+            autoindex on;
+        }
         location / {
             proxy_pass http://127.0.0.1:8000;
             proxy_set_header Host \$host;
@@ -44,9 +48,6 @@ resource "aws_instance" "portfolio" {
             proxy_set_header X-Forwarded-Proto \$scheme;
         }
 
-        location /static {
-            alias /home/ubuntu/portfolio/portfolio/static/
-        }
     }
     EOF_NGINX
 
