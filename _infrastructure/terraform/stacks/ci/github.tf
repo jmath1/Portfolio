@@ -13,5 +13,5 @@ resource "github_actions_secret" "aws_account_number" {
 resource "github_actions_secret" "public_ip" {
   repository      = var.github_repository_repo
   secret_name     = "PUBLIC_IP"
-  plaintext_value = data.terraform_remote_state.service.outputs.ec2_public_ip
+  plaintext_value = data.terraform_remote_state.web.outputs.ec2_public_ip
 }
