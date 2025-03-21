@@ -5,7 +5,7 @@ resource "aws_instance" "portfolio" {
   key_name             = aws_key_pair.deployer.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-  subnet_id            = local.private_subnets[0]
+  subnet_id            = local.public_subnets[0]
   associate_public_ip_address = true
   user_data = <<-EOF
     #!/bin/bash
