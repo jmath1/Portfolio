@@ -5,3 +5,4 @@ venv/
 github_id_rsa
 inventory.ini
 __pycache__
+portfolio/static/
