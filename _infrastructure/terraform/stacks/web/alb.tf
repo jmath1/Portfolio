@@ -71,3 +71,21 @@ resource "aws_route53_record" "alb_dns" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "metrics_dns" {
+  zone_id = data.terraform_remote_state.domain.outputs.route53_zone.id
+  name    = "metrics.${var.domain_name}.${var.tld}"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_lb_target_group_attachment" "tg_attachment" {
+  target_group_arn = aws_lb_target_group.tg.arn
+  target_id        = aws_instance.metrics.id
+  port             = 80
+}
