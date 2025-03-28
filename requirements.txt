@@ -2,6 +2,7 @@ asgiref==3.8.1
 boto3==1.37.15
 botocore==1.37.15
 Django==5.1.7
+django-storages==1.14.5
 gunicorn==23.0.0
 jmespath==1.0.1
 packaging==24.2
