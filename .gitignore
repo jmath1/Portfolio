@@ -6,4 +6,5 @@ github_id_rsa
 inventory.ini
 __pycache__
 portfolio/static/
+portfolio/media/
 db.sqlite3
