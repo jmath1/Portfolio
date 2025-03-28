@@ -34,7 +34,7 @@ if os.getenv("CLOUD"):
     os.environ["DB_HOST"] = get_secret("DB_HOST")
     os.environ["DB_PORT"] = get_secret("DB_PORT")
     os.environ["DJANGO_SECRET_KEY"] = get_secret("SECRET_KEY")
-    os.environ["AWS_STORAGE_BUCKET_NAME"] = get_secret("S3_BUCKET_ARN")
+    os.environ["AWS_STORAGE_BUCKET_ARN"] = get_secret("S3_BUCKET_ARN")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,15 +165,30 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 if os.getenv("CLOUD"):
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_ARN").split(":")[-1]
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "bucket_name": AWS_S3_BUCKET_NAME,
+                "region_name": 'us-east-1',
+                "location": "static",
+            },
+        },
+    }
     
     # Static files
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/static/'
+    STATIC_URL = f'https://{AWS_S3_BUCKET_NAME}.s3.amazonaws.com/static/'
 
     # Media files
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
+    MEDIA_URL = f'https://{AWS_S3_BUCKET_NAME}.s3.amazonaws.com/media/'
+    
 else:
     STATIC_ROOT = BASE_DIR / "static"
     STATIC_URL = "static/"
