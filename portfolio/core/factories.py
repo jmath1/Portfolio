@@ -1,8 +1,7 @@
 import factory
 from factory.django import DjangoModelFactory
 from django.contrib.auth.models import User
-from colorfield.fields import ColorField
-from .models import (
+from core.models import (
     ColorScheme,
     Block,
     HeaderBlock,
