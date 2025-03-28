@@ -11,14 +11,14 @@ class ColorScheme(models.Model):
     text_color = ColorField(default='#333333')
 
     def __str__(self):
-        return f"{self.name} - {self.portfolio.name}"
+        return f"{self.name}"
     
 class Block(models.Model):
     order = models.IntegerField()
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name} - {self.portfolio.name}"
+        return f"{self.name}"
     class Meta:
         ordering = ['order']
 
@@ -33,7 +33,7 @@ class HeaderBlock(Block):
     
     style = models.CharField(max_length=255, choices=STYLE_CHOICES, default='minimal')
     background_color_override = ColorField(null=True, blank=True)
-    image = models.ImageField(upload_to='header_images/')
+    image = models.ImageField(upload_to='header_images/', null=True, blank=True)
     header = models.CharField(max_length=255)
     header_color_override = ColorField(null=True, blank=True)
     header_size = models.CharField(max_length=255, choices=[
