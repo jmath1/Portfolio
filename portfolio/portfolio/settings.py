@@ -57,7 +57,7 @@ else:
 if os.getenv("CLOUD"):
     ALLOWED_HOSTS = [get_secret("ALLOWED_HOST"), get_secret("PRIVATE_IP")]
     CSRF_TRUSTED_ORIGINS = [
-        "https://api.jonathanmath.com",
+        f"https://{get_secret('ALLOWED_HOST')}",
     ]
 else:
     ALLOWED_HOSTS = ["web", "0.0.0.0", "localhost"]
