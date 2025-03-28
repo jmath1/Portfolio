@@ -1,5 +1,7 @@
 import factory
 from factory.django import DjangoModelFactory
+from django.core.files.base import ContentFile
+import requests
 from django.contrib.auth.models import User
 from core.models import (
     ColorScheme,
@@ -13,6 +15,12 @@ from core.models import (
     NavigationItem,
     Portfolio
 )
+
+
+def download_image(url, filename):
+    response = requests.get(url)
+    response.raise_for_status()
+    return ContentFile(response.content, name=filename)
 
 
 class UserFactory(DjangoModelFactory):
@@ -49,7 +57,9 @@ class HeaderBlockFactory(BlockFactory):
         model = HeaderBlock
 
     style = 'minimal'
-    image = factory.django.ImageField(color='blue')
+    image = factory.LazyAttribute(
+        lambda _: download_image('https://picsum.photos/800/600', 'header.jpg')
+    )
     header = factory.Faker('sentence', nb_words=3)
     header_size = 'medium'
     subheading = factory.Faker('sentence', nb_words=5)
@@ -76,7 +86,9 @@ class BlogPostFactory(DjangoModelFactory):
     blog_section = factory.SubFactory(BlogSectionBlockFactory)
     title = factory.Faker('sentence', nb_words=4)
     subtitle = factory.Faker('sentence', nb_words=6)
-    image = factory.django.ImageField(color='green')
+    image = factory.LazyAttribute(
+        lambda _: download_image('https://picsum.photos/800/600', 'blogpost.jpg')
+    )
     html_file = factory.django.FileField(data=b'Test content')
 
 
@@ -109,7 +121,9 @@ class ProjectItemFactory(DjangoModelFactory):
     projects_block = factory.SubFactory(ProjectsBlockFactory)
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('paragraph')
-    image = factory.django.ImageField(color='red')
+    image = factory.LazyAttribute(
+        lambda _: download_image('https://picsum.photos/800/600', 'projectitem.jpg')
+    )
     link = factory.Faker('url')
     github_link = factory.Faker('url')
 
