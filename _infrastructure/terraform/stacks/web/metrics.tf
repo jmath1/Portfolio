@@ -1,6 +1,17 @@
 # create an ec2 instance that will have docker containers for prometheus and grafana that will have the metrics for the web application and rds
 
-
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"]
+}
 resource "aws_instance" "metrics" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"

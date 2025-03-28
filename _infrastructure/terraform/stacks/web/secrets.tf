@@ -35,3 +35,12 @@ resource "aws_secretsmanager_secret_version" "alloweed_host_version" {
     secret_id   = aws_secretsmanager_secret.allowed_host.id
     secret_string = "api.${var.domain_name}.${var.tld}"
 }
+
+resource "aws_secretsmanager_secret" "bucket_arn" {
+    name = "S3_BUCKET_ARN"
+}
+
+resource "aws_secretsmanager_secret_version" "bucket_arn_version" {
+    secret_id   = aws_secretsmanager_secret.bucket_arn.id
+    secret_string = aws_s3_bucket.portfolio_bucket.arn
+}

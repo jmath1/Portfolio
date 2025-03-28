@@ -84,7 +84,7 @@ resource "aws_route53_record" "metrics_dns" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "tg_attachment" {
+resource "aws_lb_target_group_attachment" "tg_metrics_attachment" {
   target_group_arn = aws_lb_target_group.tg.arn
   target_id        = aws_instance.metrics.id
   port             = 80
