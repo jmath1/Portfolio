@@ -59,7 +59,9 @@ if os.getenv("CLOUD"):
 else:
     ALLOWED_HOSTS = ["web", "0.0.0.0", "localhost"]
 
-CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.jonathanmath.com",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
