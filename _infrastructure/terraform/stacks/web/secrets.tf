@@ -44,3 +44,12 @@ resource "aws_secretsmanager_secret_version" "bucket_arn_version" {
     secret_id   = aws_secretsmanager_secret.bucket_arn.id
     secret_string = aws_s3_bucket.portfolio_bucket.arn
 }
+
+resource "aws_secretsmanager_secret" "private_ec2_ip" {
+    name = "PRIVATE_IP"
+}
+
+resource "aws_secretsmanager_secret_version" "private_ec2_ip_version" {
+    secret_id   = aws_secretsmanager_secret.private_ec2_ip.id
+    secret_string = aws_instance.portfolio.private_ip
+}

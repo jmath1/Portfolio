@@ -55,7 +55,7 @@ else:
     DEBUG = True
 
 if os.getenv("CLOUD"):
-    ALLOWED_HOSTS = [get_secret("ALLOWED_HOST")]
+    ALLOWED_HOSTS = [get_secret("ALLOWED_HOST"), get_secret("PRIVATE_IP")]
 else:
     ALLOWED_HOSTS = ["web", "0.0.0.0", "localhost"]
 
