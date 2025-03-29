@@ -60,7 +60,7 @@ if os.getenv("CLOUD"):
         f"https://{get_secret('ALLOWED_HOST')}",
     ]
 else:
-    ALLOWED_HOSTS = ["web", "0.0.0.0", "localhost"]
+    ALLOWED_HOSTS = ["web", "0.0.0.0", "localhost", "127.0.0.1"]
 
 
 INSTALLED_APPS = [
@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "core",
     "storages",
+    "colorfield"
 ]
 
 MIDDLEWARE = [
