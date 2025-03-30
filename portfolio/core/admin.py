@@ -83,6 +83,8 @@ class PortfolioAdmin(admin.ModelAdmin):
     search_fields = ('name', 'owner__username')
 
     def edit_json_button(self, obj):
+        if not obj.id:
+            return ""
         url = reverse('admin:portfolio_edit_json', args=[obj.id])
         return format_html('<a class="button" href="{}">Edit as JSON</a>', url)
     edit_json_button.short_description = "Edit as JSON"
