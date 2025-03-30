@@ -124,7 +124,11 @@ if os.getenv("CLOUD"):
         }
     }
     CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
-        
+    if DEBUG:
+        CORS_ALLOWED_ORIGINS = [
+            "http://localhost:3000",
+            "http://0.0.0.0:3000",
+        ]
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
@@ -136,7 +140,6 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
