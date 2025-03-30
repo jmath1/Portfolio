@@ -22,6 +22,9 @@ class Block(models.Model):
         return f"{self.name}"
     class Meta:
         ordering = ['order']
+        
+    def __str__(self):
+        return f"{self.name}"
 
 class HeaderBlock(Block):
     STYLE_CHOICES = [
@@ -52,6 +55,9 @@ class HeaderBlock(Block):
     button_text = models.CharField(max_length=255, null=True, blank=True)
     button_link = models.URLField()
     button_color_override = ColorField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.header
 
 class BlogSectionBlock(Block):
     title = models.CharField(max_length=255)
@@ -72,6 +78,9 @@ class BlogSectionBlock(Block):
         ('classic', 'Classic'),
         ('minimal', 'Minimal'),
     ], default='modern')
+    
+    def __str_(self):
+        return f"BlogSectionBlock {self.id}"
 
 class BlogPost(models.Model):
     blog_section = models.ForeignKey(BlogSectionBlock, on_delete=models.CASCADE, related_name='blog_posts')
@@ -86,6 +95,9 @@ class BlogPost(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        
+    def __str__(self):
+        return f"{self.slug}"
 
 class Navigation(models.Model):
     style = models.CharField(max_length=255, choices=[
@@ -104,6 +116,9 @@ class Navigation(models.Model):
     ], default='none')
     link_color_override = ColorField(null=True, blank=True)
     link_color_on_hover = ColorField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Navigation - {self.id}"
 
 class ProjectsBlock(Block):
     title = models.CharField(max_length=255)
@@ -119,6 +134,9 @@ class ProjectsBlock(Block):
         ('list', 'List'),
         ('carousel', 'Carousel'),
     ], default='grid')
+    
+    def __str__(self):
+        return f"{self.title}"
 
 class ProjectItem(models.Model):
     projects_block = models.ForeignKey(ProjectsBlock, on_delete=models.CASCADE, related_name='project_items')
@@ -129,10 +147,16 @@ class ProjectItem(models.Model):
     github_link = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
+
+    def __str__(self):
+        return f"ProjectItem {self.title}"
 class NavigationItem(models.Model):
     navigation = models.ForeignKey(Navigation, on_delete=models.CASCADE, related_name='navigation_items')
     text = models.CharField(max_length=255)
     link = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return f"NavigationItem {self.text}"
     
 
 class Portfolio(models.Model):

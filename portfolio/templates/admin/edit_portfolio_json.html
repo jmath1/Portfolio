@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %} {% block content %}
+<h1>Edit Portfolio: {{ portfolio.name }}</h1>
+<p style="color: lightcoral">
+  Warning: Images and IDs are read only. To update images, use the main admin
+  interface.
+</p>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit" class="button">Save Changes</button>
+</form>
+<a href="../..">Back to Portfolio List</a>
+{% endblock %}

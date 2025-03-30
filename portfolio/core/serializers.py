@@ -23,11 +23,15 @@ class BlockSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class HeaderBlockSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=True)
+
     class Meta:
         model = HeaderBlock
         fields = '__all__'
 
 class BlogPostSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=True)
+    html_file = serializers.FileField(read_only=True)
 
     class Meta:
         model = BlogPost
@@ -41,6 +45,7 @@ class BlogSectionBlockSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProjectItemSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=True)
 
     class Meta:
         model = ProjectItem
@@ -66,12 +71,35 @@ class NavigationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PortfolioSerializer(serializers.ModelSerializer):
-    color_scheme = ColorSchemeSerializer(read_only=True)
-    header_block = HeaderBlockSerializer(read_only=True)
-    navigation = NavigationSerializer(read_only=True)
-    blog_section_block = BlogSectionBlockSerializer(read_only=True)
-    projects_block = ProjectsBlockSerializer(read_only=True)
+    color_scheme = ColorSchemeSerializer()
+    header_block = HeaderBlockSerializer()
+    navigation = NavigationSerializer()
+    blog_section_block = BlogSectionBlockSerializer()
+    projects_block = ProjectsBlockSerializer()
     
     class Meta:
         model = Portfolio
         fields = '__all__'
+
+    def update(self, instance, validated_data):
+        if 'color_scheme' in validated_data:
+            color_scheme_data = validated_data.pop('color_scheme')
+            ColorScheme.objects.filter(id=instance.color_scheme.id).update(**color_scheme_data)
+        
+        if 'header_block' in validated_data:
+            header_block_data = validated_data.pop('header_block')
+            HeaderBlock.objects.filter(id=instance.header_block.id).update(**header_block_data)
+        
+        if 'navigation' in validated_data:
+            navigation_data = validated_data.pop('navigation')
+            Navigation.objects.filter(id=instance.navigation.id).update(**navigation_data)
+        
+        if 'blog_section_block' in validated_data:
+            blog_section_data = validated_data.pop('blog_section_block')
+            BlogSectionBlock.objects.filter(id=instance.blog_section_block.id).update(**blog_section_data)
+        
+        if 'projects_block' in validated_data:
+            projects_block_data = validated_data.pop('projects_block')
+            ProjectsBlock.objects.filter(id=instance.projects_block.id).update(**projects_block_data)
+        
+        return super().update(instance, validated_data)
