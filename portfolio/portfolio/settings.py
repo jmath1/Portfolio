@@ -198,10 +198,15 @@ if os.getenv("CLOUD"):
 
     if not AWS_S3_BUCKET_NAME:
         raise ValueError("Bucket name could not be extracted from AWS_STORAGE_BUCKET_ARN.")
-
+    
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": AWS_S3_BUCKET_NAME,
+                "region_name": 'us-east-1',
+                "location": 'media',
+            },
         },
         "staticfiles": {
             "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
