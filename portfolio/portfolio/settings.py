@@ -15,7 +15,12 @@ import os
 import boto3
 
 if os.getenv("CLOUD"):
+    import logging
+    logger = logging.getLogger(__name__)
+
     def get_secret(secret_name):
+        if not secret_name:
+            raise ValueError("Secret name must be provided.")
         client = boto3.client("secretsmanager", region_name="us-east-1")
         try:
             get_secret_value_response = client.get_secret_value(SecretId=secret_name)
@@ -23,10 +28,10 @@ if os.getenv("CLOUD"):
             if secret:
                 return secret
             else:
-                raise ValueError(f"{secret_name} not found")
+                raise ValueError(f"Secret '{secret_name}' not found or empty.")
         except Exception as e:
-            print(f"Error retrieving secret {secret_name}: {e}")
-            return None
+            logger.error(f"Error retrieving secret '{secret_name}': {e}")
+            raise
 
     os.environ["DB_NAME"] = get_secret("DB_NAME")
     os.environ["DB_USER"] = get_secret("DB_USER")
@@ -182,11 +187,21 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 if os.getenv("CLOUD"):
-    AWS_S3_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_ARN").split(":")[-1]
+    AWS_STORAGE_BUCKET_ARN = os.getenv("AWS_STORAGE_BUCKET_ARN")
+    if not AWS_STORAGE_BUCKET_ARN:
+        raise ValueError("AWS_STORAGE_BUCKET_ARN environment variable is not set.")
+
+    try:
+        AWS_S3_BUCKET_NAME = AWS_STORAGE_BUCKET_ARN.split(":")[-1]
+    except IndexError:
+        raise ValueError("Invalid AWS_STORAGE_BUCKET_ARN format. Expected format: 'arn:aws:s3:::bucket-name'.")
+
+    if not AWS_S3_BUCKET_NAME:
+        raise ValueError("Bucket name could not be extracted from AWS_STORAGE_BUCKET_ARN.")
+
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
-
         },
         "staticfiles": {
             "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
