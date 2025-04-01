@@ -1,4 +1,4 @@
-name: Build Django app and push to to AWS ECR
+name: Build Django app and push to AWS ECR with versioning
 
 on:
   push:
@@ -16,21 +16,32 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/GitHubRunnerRole
           aws-region: us-east-1
+
       - name: Retrieve ECR URI from Secret
         run: echo "ECR_URI=${{ secrets.ECR_URI }}" >> $GITHUB_ENV
+
+      - name: Get Git Commit Hash
+        id: git-info
+        run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build image
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
-          docker build --file _infrastructure/docker/Dockerfile -t portfolio-app:latest .
+          docker build --file _infrastructure/docker/Dockerfile -t portfolio-app:${{ env.COMMIT_HASH }} -t portfolio-app:latest .
+
       - name: Push image to ECR
         run: |
+          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
           docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
+          docker push ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
           docker push ${{ env.ECR_URI }}:latest
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -44,8 +55,9 @@ jobs:
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
-            docker rm $(docker ps -q) --force
+            docker rm $(docker ps -q) --force || true
             docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+
   migrate:
     needs: deploy
     runs-on: ubuntu-latest
@@ -58,6 +70,7 @@ jobs:
           key: ${{ secrets.SSH_PK }}
           script: |
             docker exec $(docker ps -q) python manage.py migrate
+
   collectstatic:
     needs: migrate
     runs-on: ubuntu-latest
