@@ -85,7 +85,7 @@ class BlogSectionBlock(Block):
 class BlogPost(models.Model):
     blog_section = models.ForeignKey(BlogSectionBlock, on_delete=models.CASCADE, related_name='blog_posts')
     title = models.CharField(max_length=255)
-    subtitle = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
     html_file = models.FileField(upload_to='blog_files/')
