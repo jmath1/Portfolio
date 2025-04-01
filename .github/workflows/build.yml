@@ -23,27 +23,27 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/GitHubRunnerRole
           aws-region: us-east-1
 
-      - name: Retrieve ECR URI from Secret
-        run: echo "ECR_URI=${{ secrets.ECR_URI }}" >> $GITHUB_ENV
-
       - name: Get Git Commit Hash
         id: git-info
         run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Build image
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
           docker build --file _infrastructure/docker/Dockerfile -t portfolio-app:${{ env.COMMIT_HASH }} .
 
       - name: Push image to ECR
         run: |
-          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
-          docker push ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
+          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
+          docker push ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get Git Commit Hash
+        id: git-info
+        run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: SSH into EC2 instance, pull latest image, and rebuild docker container with latest image
         uses: appleboy/ssh-action@master
         with:
@@ -51,11 +51,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PK }}
           script: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker rm $(docker ps -q) --force || true
             docker image rm $(docker image ls -q) || true
-            docker pull ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
-            docker run -d --network host -e CLOUD=True ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
+            docker pull ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
+            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
   migrate:
     needs: deploy
     runs-on: ubuntu-latest
