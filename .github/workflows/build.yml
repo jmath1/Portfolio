@@ -37,7 +37,7 @@ jobs:
 
       - name: Push image to ECR
         run: |
-          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }
+          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }}
           docker push ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
 
   deploy:
