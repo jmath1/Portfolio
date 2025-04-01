@@ -53,10 +53,9 @@ jobs:
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker rm $(docker ps -q) --force || true
-            docker image rm $(docker image ls -q)
+            docker image rm $(docker image ls -q) || true
             docker pull ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
             docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
-
   migrate:
     needs: deploy
     runs-on: ubuntu-latest
