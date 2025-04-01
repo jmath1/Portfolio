@@ -61,3 +61,13 @@ resource "aws_iam_role_policy" "uploader_policy" {
     ]
   })
 }
+
+
+resource "aws_s3_bucket_cors_configuration" "example" {
+  bucket = aws_s3_bucket.portfolio_bucket.id
+
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
+}
