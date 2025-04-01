@@ -33,14 +33,12 @@ jobs:
       - name: Build image
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
-          docker build --file _infrastructure/docker/Dockerfile -t portfolio-app:${{ env.COMMIT_HASH }} -t portfolio-app:latest .
+          docker build --file _infrastructure/docker/Dockerfile -t portfolio-app:${{ env.COMMIT_HASH }} .
 
       - name: Push image to ECR
         run: |
-          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
-          docker tag portfolio-app:latest ${{ env.ECR_URI }}:latest
+          docker tag portfolio-app:${{ env.COMMIT_HASH }} ${{ env.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }
           docker push ${{ env.ECR_URI }}:${{ env.COMMIT_HASH }}
-          docker push ${{ env.ECR_URI }}:latest
 
   deploy:
     needs: build
@@ -54,9 +52,9 @@ jobs:
           key: ${{ secrets.SSH_PK }}
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
-            docker pull ${{ secrets.ECR_URI }}:latest
+            docker pull ${{ secrets.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }}
             docker rm $(docker ps -q) --force || true
-            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }}
 
   migrate:
     needs: deploy
