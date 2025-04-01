@@ -52,9 +52,9 @@ jobs:
           key: ${{ secrets.SSH_PK }}
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
-            docker pull ${{ secrets.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }}
+            docker pull ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
             docker rm $(docker ps -q) --force || true
-            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}/portfolio-app:${{ env.COMMIT_HASH }}
+            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:${{ env.COMMIT_HASH }}
 
   migrate:
     needs: deploy
