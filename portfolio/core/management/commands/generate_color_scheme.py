@@ -3,7 +3,7 @@ import colorsys
 import webcolors
 
 from django.core.management.base import BaseCommand
-from core.models import ColorScheme  # change to your app
+from core.models import ColorScheme
 
 # ---------- STYLE DEFINITIONS ----------
 
@@ -44,7 +44,7 @@ def hex_to_hsl(hex_color):
     g /= 255
     b /= 255
     h, l, s = colorsys.rgb_to_hls(r, g, b)
-    return (h * 360, s, l)  # Correct order is H, S, L
+    return (h * 360, s, l)
 
 def hsl_to_hex(h, s, l):
     r, g, b = colorsys.hls_to_rgb(h / 360.0, l, s)
@@ -132,6 +132,7 @@ class Command(BaseCommand):
 
         for i in range(count):
             data = generate_color_scheme(base_hex, style)
+            data['name'] = f"{data['style'].capitalize()} ({data['harmony']}) {primary_input} Scheme"
             scheme = ColorScheme.objects.create(
                 name=data['name'],
                 primary_color=data['primary_color'],
