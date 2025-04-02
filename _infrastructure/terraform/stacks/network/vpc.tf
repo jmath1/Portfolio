@@ -1,4 +1,5 @@
 module "vpc" {
+  count = var.use_vpc ? 1 : 0
   source = "terraform-aws-modules/vpc/aws"
 
   name = "${var.domain_name}-vpc"

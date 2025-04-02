@@ -41,3 +41,12 @@ variable "github_token" {
 variable "bucket_name" {
   type = string
 }
+
+variable "use_vpc" {
+  type    = bool
+  default = false
+}
+
+variable "email" {
+  type = string
+}

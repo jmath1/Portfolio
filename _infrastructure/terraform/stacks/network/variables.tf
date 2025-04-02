@@ -17,3 +17,8 @@ variable "public_subnet_cidr" {
 variable "private_subnet_cidr" {
   type = string
 }
+
+variable "use_vpc" {
+  type    = bool
+  default = false
+}

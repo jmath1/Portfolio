@@ -72,7 +72,7 @@ tasks:
     usage: "task ansible_pb -- deploy"
     cmds:
       - playbook=$(echo {{ .CLI_ARGS }} | cut -d " " -f1);
-      - ansible-playbook -i inventory.ini _infrastructure/ansible/playbooks/${playbook}.yml
+        ansible-playbook -i inventory.ini _infrastructure/ansible/playbooks/${playbook}.yml
 
   tf_import:
     cmds:

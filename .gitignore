@@ -8,3 +8,4 @@ __pycache__
 portfolio/static/
 portfolio/media/
 db.sqlite3
+backup_db.json
