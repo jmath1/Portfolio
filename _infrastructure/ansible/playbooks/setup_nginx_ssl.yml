@@ -29,12 +29,6 @@
         dest: /etc/nginx/sites-available/portfolio
         content: |
           server {
-              listen 80;
-              server_name {{ domain_name }};
-              return 301 https://$host$request_uri;
-          }
-
-          server {
               listen 443 ssl;
               server_name {{ domain_name }};
 
@@ -65,3 +59,29 @@
         job: "certbot renew --quiet && systemctl reload nginx"
         minute: 0
         hour: 0
+
+    - name: Turn on UFW
+      ufw:
+        state: enabled
+        policy: deny
+    - name: Enable UFW for SSH
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+      notify: Reload UFW
+    - name: Enable UFW for HTTPS
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+      notify: Reload UFW
+    - name: Deny HTTP (port 80) explicitly
+      ufw:
+        rule: deny
+        port: 80
+        proto: tcp
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
