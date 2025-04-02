@@ -69,18 +69,17 @@
         rule: allow
         port: 22
         proto: tcp
-      notify: Reload UFW
     - name: Enable UFW for HTTPS
       ufw:
         rule: allow
         port: 443
         proto: tcp
-      notify: Reload UFW
     - name: Deny HTTP (port 80) explicitly
       ufw:
         rule: deny
         port: 80
         proto: tcp
+      notify: Reload UFW
   handlers:
     - name: Reload UFW
       ufw:
