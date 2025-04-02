@@ -31,3 +31,4 @@ This repository contains the infrastructure and backend for my portfolio project
    3. **Registry**: This stack sets up the ECR repository to hold docker images.
    4. **Web**: This stack deploys the application services and ALB. This also handles the setup of databases and other persistent storage solutions like AWS
    5. **CI**: This stack configures the continuous integration and deployment pipelines, their access, and whatever additional secrets it might need.
+   6. **Events** This stack is responsible for starting the EC2 instance and RDS instance at 8:30am and stopping them at 11pm for cost optimization.
