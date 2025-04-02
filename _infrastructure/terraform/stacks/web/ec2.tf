@@ -1,7 +1,7 @@
 
 resource "aws_instance" "portfolio" {
   ami                  = "ami-04b4f1a9cf54c11d0"
-  instance_type        = "t3.micro"
+  instance_type        = "t2.micro"
   key_name             = aws_key_pair.deployer.key_name
   
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
@@ -35,11 +35,8 @@ resource "aws_instance" "portfolio" {
     server {
         listen 80;
         server_name api.jonathanmath.com;
+        client_max_body_size 2M;
 
-        location /static/ {
-            alias /srv/static/;
-            autoindex on;
-        }
         location / {
             proxy_pass http://127.0.0.1:8000;
             proxy_set_header Host \$host;

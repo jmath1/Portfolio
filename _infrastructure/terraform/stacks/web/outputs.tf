@@ -31,3 +31,11 @@ output "ec2_security_group_id" {
 output "rds_security_group_id" {
   value = aws_security_group.rds_sg.id
 }
+
+output "ec2_instance_id" {
+  value = aws_instance.portfolio.id
+}
+
+output "rds_instance_identifier" {
+  value = aws_db_instance.portfolio_db.identifier
+}
