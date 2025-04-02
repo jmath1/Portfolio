@@ -30,5 +30,6 @@ This repository contains the infrastructure and backend for my portfolio project
    2. **Network**: This stack configures the network settings, including VPCs, subnets, and routing.
    3. **Registry**: This stack sets up the ECR repository to hold docker images.
    4. **Web**: This stack deploys the application services and ALB. This also handles the setup of databases and other persistent storage solutions like AWS
+      Note: If TF_VAR_use_vpc is false then you will need to run the ansible playbook to setup nginx and ssl certs from within the ec2 instance instead of doing it with terraform using acm certs. Use `task ansible_pb -- setup_nginx_ssl` to achieve this
    5. **CI**: This stack configures the continuous integration and deployment pipelines, their access, and whatever additional secrets it might need.
    6. **Events** This stack is responsible for starting the EC2 instance and RDS instance at 8:30am and stopping them at 11pm for cost optimization.
