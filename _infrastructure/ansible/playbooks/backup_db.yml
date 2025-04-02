@@ -1,0 +1,12 @@
+---
+- name: Backup DB
+  hosts: portfolio
+  become: yes
+  tasks:
+    - name: Backup DB
+      command: /bin/bash -c "docker exec $(docker ps -q) python manage.py dumpdata > db_backup.json"
+    - name: Copy DB backup to local machine
+      fetch:
+        src: db_backup.json
+        dest: db_backup.json
+        flat: yes

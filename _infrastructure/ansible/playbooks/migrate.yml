@@ -1,0 +1,8 @@
+---
+- name: Run migrations
+  hosts: portfolio
+  become: yes
+
+  tasks:
+    - name: Run Migrations
+      command: /bin/bash -c "docker exec $(docker ps -q) python manage.py migrate"
