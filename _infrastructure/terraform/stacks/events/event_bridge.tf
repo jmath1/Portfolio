@@ -11,18 +11,19 @@ resource "aws_lambda_function" "scheduler" {
   environment {
     variables = {
       EC2_INSTANCE_ID = local.ec2_instance_id
+      use_rds        = var.use_rds
       RDS_INSTANCE_IDENTIFIER = local.rds_instance_identifier
     }
   }
 }
 
 resource "aws_cloudwatch_event_rule" "shutdown_rule" {
-  name                = "ec2_rds_shutdown_schedule"
+  name                = "shutdown_schedule"
   schedule_expression = "cron(0 4 ? * * *)" # every day at 4:00 UTC (11:00 PM EST)
 }
 
 resource "aws_cloudwatch_event_rule" "startup_rule" {
-  name                = "ec2_rds_startup_schedule"
+  name                = "startup_schedule"
   schedule_expression = "cron(30 13 ? * * *)" # every day at 13:30 UTC (8:30 AM EST)
 }
 
