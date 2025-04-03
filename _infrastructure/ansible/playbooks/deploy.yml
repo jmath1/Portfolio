@@ -1,0 +1,23 @@
+# playbook that uses djanog, docker_postgres, and nginx roles
+---
+- name: Deploy Portfolio Application
+  hosts: portfolio
+  become: yes
+  vars:
+    USING_RDS: "{{ lookup('env', 'TF_VAR_use_rds') }}"
+    domain_name: "api.{{ lookup('env', 'TF_VAR_domain_name') }}.{{ lookup('env', 'TF_VAR_tld') }}"
+    email: "{{ lookup('env', 'TF_VAR_email') }}"
+    use_vpc: "{{ lookup('env', 'TF_VAR_use_vpc') }}"
+    db_user: "{{ lookup('env', 'TF_VAR_db_user') }}"
+    db_password: "{{ lookup('env', 'TF_VAR_db_password') }}"
+    db_name: "{{ lookup('env', 'TF_VAR_db_name') }}"
+
+  roles:
+    - role: docker_postgres
+    - role: django
+    - role: nginx
+
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
