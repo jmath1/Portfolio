@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "portfolio_bucket" {
   bucket = var.bucket_name
+  force_destroy = true
 
   tags = {
     Name = var.bucket_name
@@ -63,7 +64,7 @@ resource "aws_iam_role_policy" "uploader_policy" {
 }
 
 
-resource "aws_s3_bucket_cors_configuration" "example" {
+resource "aws_s3_bucket_cors_configuration" "_" {
   bucket = aws_s3_bucket.portfolio_bucket.id
 
   cors_rule {
