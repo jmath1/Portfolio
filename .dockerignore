@@ -5,3 +5,5 @@ venv/
 **/.terraform/
 _infrastucture/**
 backup_db.json
+**/__pycache__/**
+*.pyc
