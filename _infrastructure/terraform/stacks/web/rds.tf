@@ -1,4 +1,6 @@
 resource "aws_db_instance" "portfolio_db" {
+  count = var.use_rds ? 1 : 0
+
   allocated_storage    = 20
   storage_type         = "gp2"
   engine              = "postgres"
@@ -10,12 +12,13 @@ resource "aws_db_instance" "portfolio_db" {
   db_name            = local.env_vars["DB_NAME"]
   publicly_accessible = var.use_vpc ? false : true
   skip_final_snapshot = true
-  db_subnet_group_name = var.use_vpc ? aws_db_subnet_group.rds_subnet_group[0].name : null
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name = local.use_rds_and_vpc ? aws_db_subnet_group.rds_subnet_group[0].name : null
+  vpc_security_group_ids = local.use_rds_and_vpc ? [aws_security_group.rds_sg[0].id] : null
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  count = var.use_vpc ? 1 : 0
+
+  count = local.use_rds_and_vpc ? 1 : 0
 
   name       = "rds-private-subnet-group"
   subnet_ids = local.private_subnets
@@ -26,9 +29,12 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 }
 
 resource "aws_security_group" "rds_sg" {
+
+  count = var.use_rds ? 1 : 0
+
   name        = "rds-security-group"
   description = "Allow database access from ec2 subnet"
-  vpc_id      = var.use_vpc ? local.vpc_id : ""
+  vpc_id      = local.vpc_id
 
   ingress {
     from_port       = 5432

@@ -50,3 +50,8 @@ variable "use_vpc" {
 variable "email" {
   type = string
 }
+
+variable "use_rds" {
+  type    = bool
+  default = false
+}

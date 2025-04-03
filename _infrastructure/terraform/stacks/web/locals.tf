@@ -6,7 +6,7 @@ locals {
     SECRET_KEY  = var.secret_key
   }
 
-  vpc_id = var.use_vpc ? data.terraform_remote_state.network.outputs.vpc_id : ""
+  vpc_id = var.use_vpc ? data.terraform_remote_state.network.outputs.vpc_id : null
 
   ssh_key_name = "github_id_rsa"
   hosted_zone_id = data.terraform_remote_state.domain.outputs.route53_zone.id
@@ -21,4 +21,6 @@ locals {
   
   private_subnets = var.use_vpc ? data.terraform_remote_state.network.outputs.private_subnets : []
   private_subnet_cidrs = var.use_vpc ? data.terraform_remote_state.network.outputs.private_subnet_cidrs : []
+
+  use_rds_and_vpc = var.use_vpc && var.use_rds
 }
