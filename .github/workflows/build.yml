@@ -50,8 +50,8 @@ jobs:
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
             docker pull ${{ secrets.ECR_URI }}:latest
-            docker rm $(docker ps -q) --force || true
-            docker run -d --network host -e CLOUD=True ${{ secrets.ECR_URI }}:latest
+            docker rm django --force || true
+            docker run -d --network host --name django -e CLOUD=True ${{ secrets.ECR_URI }}:latest
   migrate:
     needs: deploy
     runs-on: ubuntu-latest
