@@ -22,9 +22,6 @@ resource "aws_instance" "portfolio" {
     unzip awscliv2.zip
     sudo ./aws/install
 
-    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${local.ecr_repository_url}
-    docker pull ${local.ecr_repository_url}:latest
-    docker run -d --network host -e CLOUD=True ${local.ecr_repository_url}:latest
 
   EOF
 
