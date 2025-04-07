@@ -34,7 +34,40 @@ resource "aws_iam_policy" "github_ecr_push_policy" {
                 "ecr:CompleteLayerUpload"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketWebsite"
+            ],
+            "Resource": ["*"]
+        },
+        {
+        Effect = "Allow"
+        Action = [
+          "cloudfront:CreateInvalidation",
+          "cloudfront:GetDistribution",
+          "cloudfront:UpdateDistribution"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateServiceLinkedRole"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "iam:AWSServiceName" = "cloudfront.amazonaws.com"
+          }
         }
+      }
     ]
 }
 EOF
