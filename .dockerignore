@@ -7,3 +7,9 @@ _infrastucture/**
 backup_db.json
 **/__pycache__/**
 *.pyc
+
+github_id_rsa
+inventory.ini
+__pycache__
+**/static
+**/media/
