@@ -54,8 +54,8 @@ else:
     SECRET_KEY = "django-insecure-5xf)*@17^bugaadsfdf09m0)6sp!1_t-1ey^f$7j!52=ms3n*w"
 
 if os.getenv("CLOUD"):
-    #DEBUG = False
-    DEBUG = True
+    DEBUG = False
+    
 else:
     DEBUG = True
 
