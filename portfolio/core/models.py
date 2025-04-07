@@ -70,7 +70,8 @@ class BlogSectionBlock(Block):
     ], default='solid')
     blog_style = models.CharField(max_length=255, choices=[
         ('grid', 'Grid'),
-        ('list', 'List'),
+        ('rows', 'Rows'),
+        ('minimalist', 'Minimalist'),
         ('carousel', 'Carousel'),
     ], default='grid')
     blog_page_style = models.CharField(max_length=255, choices=[
