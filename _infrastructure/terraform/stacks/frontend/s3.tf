@@ -45,3 +45,19 @@ resource "aws_s3_bucket_policy" "react_app" {
     }]
   })
 }
+
+
+resource "aws_s3_bucket_cors_configuration" "react_app" {
+  bucket = aws_s3_bucket.react_app.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = [
+      "https://${var.domain_name}.${var.tld}",
+      "https://www.${var.domain_name}.${var.tld}"
+    ]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}

@@ -9,3 +9,7 @@ output "s3_bucket_name" {
 output "website_url" {
   value = "https://${aws_cloudfront_distribution.react_app.domain_name}"
 }
+
+output "react_app_path" {
+  value = var.react_app_path
+}

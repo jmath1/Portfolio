@@ -2,6 +2,7 @@
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "react_app" {
   depends_on = [null_resource.build_and_deploy]
+  aliases = ["${var.domain_name}.${var.tld}"]
 
   origin {
     domain_name = aws_s3_bucket.react_app.bucket_regional_domain_name
@@ -10,9 +11,10 @@ resource "aws_cloudfront_distribution" "react_app" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
+
   }
 
   enabled             = true
@@ -46,7 +48,9 @@ resource "aws_cloudfront_distribution" "react_app" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = data.terraform_remote_state.domain.outputs.acm_main_cert_arn
+    ssl_support_method = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   custom_error_response {
