@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Backup DB
-      command: /bin/bash -c "docker exec $(docker ps -q) python manage.py dumpdata > db_backup.json"
+      command: /bin/bash -c "docker exec django python manage.py dumpdata > db_backup.json"
     - name: Copy DB backup to local machine
       fetch:
         src: db_backup.json
