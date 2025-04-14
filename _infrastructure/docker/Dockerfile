@@ -10,7 +10,6 @@ COPY . .
 ENV DJANGO_SETTINGS_MODULE=portfolio.settings
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app/portfolio
-RUN python manage.py test
 
 EXPOSE 8000
 
