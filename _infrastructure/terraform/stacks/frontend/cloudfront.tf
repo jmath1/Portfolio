@@ -1,7 +1,6 @@
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "react_app" {
-  depends_on = [null_resource.build_and_deploy]
   aliases = ["${var.domain_name}.${var.tld}"]
 
   origin {
@@ -63,24 +62,5 @@ resource "aws_cloudfront_distribution" "react_app" {
     error_code         = 404
     response_code      = 200
     response_page_path = "/index.html"
-  }
-}
-
-resource "null_resource" "create_invalidation" {
-  depends_on = [aws_cloudfront_distribution.react_app]
-
-  triggers = {
-    build_dir_hash = sha1(
-      join("", 
-        [for f in fileset("${var.react_app_path}/build", "**"): filesha1("${var.react_app_path}/build/${f}")]
-      )
-    )
-  }
-
-  provisioner "local-exec" {
-
-    command = <<EOT
-      aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.react_app.id} --paths "/*"
-    EOT
   }
 }
