@@ -147,7 +147,7 @@ class ProjectItem(models.Model):
     link = models.URLField()
     github_link = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, default='')
     
     def save(self, *args, **kwargs):
         if not self.slug:
