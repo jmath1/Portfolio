@@ -142,6 +142,7 @@ class ProjectsBlock(Block):
 class ProjectItem(models.Model):
     projects_block = models.ForeignKey(ProjectsBlock, on_delete=models.CASCADE, related_name='project_items')
     title = models.CharField(max_length=255)
+    blurb = models.TextField(max_length=140, null=True, blank=True)
     description = models.TextField()
     image = models.ImageField(upload_to='project_images/')
     link = models.URLField()
