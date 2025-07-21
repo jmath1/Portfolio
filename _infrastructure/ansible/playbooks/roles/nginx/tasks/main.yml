@@ -60,8 +60,9 @@
 
 - name: Setup auto-renewal cron
   cron:
-    name: "Auto-renew Let's Encrypt certificate"
-    job: "certbot renew --quiet && systemctl reload nginx"
+    name: "Auto-renew Let's Encrypt certificates"
+    job: |
+      ufw allow 80/tcp && certbot renew --quiet && systemctl reload nginx && ufw deny 80/tcp
     minute: 0
     hour: 0
   when: use_vpc | bool == false

@@ -39,3 +39,7 @@ output "ec2_instance_id" {
 output "rds_instance_identifier" {
   value = var.use_rds ? aws_db_instance.portfolio_db[0].identifier : null
 }
+
+output "ssh_private_key_path" {
+  value = "${path.cwd}/_infrastructure/terraform/stacks/web/${local_file.private_key.filename}"
+}
