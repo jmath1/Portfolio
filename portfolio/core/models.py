@@ -91,6 +91,7 @@ class BlogPost(models.Model):
     image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
     html_file = models.FileField(upload_to='blog_files/')
     slug = models.SlugField(max_length=255, unique=True)
+    read_time = models.IntegerField(default=5)
     
     def save(self, *args, **kwargs):
         if not self.slug:
