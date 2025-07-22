@@ -4,7 +4,8 @@
 
 - name: Login to ECR
   shell: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_repository.stdout }}
-
+- name: Remove danging images
+  shell: docker image prune -f
 - name: Pull latest image from ECR
   shell: docker pull {{ ecr_repository.stdout }}:latest
 
