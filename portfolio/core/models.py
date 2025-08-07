@@ -2,6 +2,15 @@ from django.db import models
 from colorfield.fields import ColorField
 from django.utils.text import slugify
 
+
+class AboutMeBlock(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    image = models.ImageField(upload_to='about_me_images/', null=True, blank=True)
+    background_color_override = ColorField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
     
 class ColorScheme(models.Model):
     name = models.CharField(max_length=255)
@@ -177,6 +186,7 @@ class Portfolio(models.Model):
     navigation = models.OneToOneField('Navigation', on_delete=models.CASCADE, null=True, blank=True)
     blog_section_block = models.OneToOneField('BlogSectionBlock', on_delete=models.CASCADE, null=True, blank=True)
     projects_block = models.OneToOneField('ProjectsBlock', on_delete=models.CASCADE, null=True, blank=True)
+    about_me_block = models.OneToOneField('AboutMeBlock', on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

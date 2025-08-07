@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import (
+    AboutMeBlock,
     ColorScheme,
     Block,
     HeaderBlock,
@@ -37,6 +38,11 @@ class BlogPostSerializer(serializers.ModelSerializer):
         model = BlogPost
         fields = '__all__'
 
+class AboutMeSectionBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutMeBlock
+        fields = '__all__'
+        
 class BlogSectionBlockSerializer(serializers.ModelSerializer):
     blog_posts = BlogPostSerializer(many=True, read_only=True)
     
@@ -76,7 +82,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
     navigation = NavigationSerializer()
     blog_section_block = BlogSectionBlockSerializer()
     projects_block = ProjectsBlockSerializer()
-    
+    about_me_block = AboutMeSectionBlockSerializer()
+
     class Meta:
         model = Portfolio
         fields = '__all__'
