@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from core.models import (
+    AboutMeBlock,
     ColorScheme,
     Block,
     HeaderBlock,
@@ -73,6 +74,15 @@ class NavigationAdmin(admin.ModelAdmin):
 class ProjectsBlockAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'background_style', 'project_style')
     inlines = [ProjectItemInline]
+    
+@admin.register(AboutMeBlock)
+class AboutMeBlockAdmin(admin.ModelAdmin):
+    list_display = ('title', 'content', 'background_color_override')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'content', 'image', 'background_color_override')
+        }),
+    )
 
 
 @admin.register(Portfolio)
